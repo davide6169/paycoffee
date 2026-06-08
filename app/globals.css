@@ -1152,7 +1152,7 @@ body {
 /* Coffee Background Overlay for InfoView */
 .info-view::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -1178,8 +1178,15 @@ body {
   min-height: 0;
   outline: none;
   -webkit-overflow-scrolling: touch;
+  /* Force GPU acceleration for smoother scrolling on iOS */
+  transform: translate3d(0, 0, 0);
+  /* Enable touch scrolling */
+  touch-action: pan-y;
   /* Add bottom padding for safe area on mobile */
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  /* Ensure content is scrollable on iOS */
+  -webkit-transform: translateZ(0);
+  will-change: scroll-position;
 }
 
 .info-view-content:focus {
