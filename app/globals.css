@@ -69,12 +69,16 @@ body {
   margin: 0;
   overflow: hidden;
   padding: 20px;
+  /* Add safe area for mobile browsers */
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 
 /* Mobile: no padding, fullscreen */
 @media (max-width: 420px) {
   body {
     padding: 0;
+    /* Add safe area for mobile browser address bar */
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
@@ -255,6 +259,8 @@ body {
   position: relative;
   z-index: 5;
   -webkit-overflow-scrolling: touch;
+  /* Add bottom padding to avoid content being hidden by toolbar */
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 /* Person List */
@@ -504,6 +510,7 @@ body {
   align-items: center;
   justify-content: space-around;
   padding: 0 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
   position: relative;
   z-index: 10;
   backdrop-filter: blur(10px);
@@ -1107,8 +1114,7 @@ body {
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   transform: rotateY(180deg);
   transform-origin: center center;
   backface-visibility: hidden;
@@ -1161,6 +1167,11 @@ body {
   .info-view::before {
     border-radius: 0;
   }
+
+  .content {
+    /* Ensure content is not hidden by toolbar on mobile */
+    padding-bottom: max(16px, calc(16px + env(safe-area-inset-bottom)));
+  }
 }
 
 .info-view-content {
@@ -1174,6 +1185,9 @@ body {
   overflow-x: hidden;
   min-height: 0;
   outline: none;
+  -webkit-overflow-scrolling: touch;
+  /* Add bottom padding for safe area on mobile */
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
 }
 
 .info-view-content:focus {
