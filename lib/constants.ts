@@ -44,7 +44,7 @@ export const IOS_COLORS = {
 // Default initial data (matching iOS app)
 export const DEFAULT_PERSONS = [
   { name: 'Tony', credits: 1, date: '2012-10-28' },
-  { name: 'Peter', credits: 2, date: '2012-10-29' },
+  { name: 'Peter', credits: 2, date: '' },
   { name: 'Phil', credits: -3, date: '2012-10-18' },
   { name: 'Mike', credits: 0, date: '' },
 ];

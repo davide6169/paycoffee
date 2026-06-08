@@ -197,15 +197,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       {
         id: 'tony-default',
         name: 'Tony',
-        credits: 3,
+        credits: 1,
         date: '2012-10-28',
         checked: false,
       },
       {
         id: 'peter-default',
         name: 'Peter',
-        credits: 0,
-        date: '',
+        credits: 2,
+        date: '2012-10-29',
         checked: false,
       },
       {
