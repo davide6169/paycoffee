@@ -7,12 +7,6 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // Enable static export for deployment
-  output: 'export',
-
-  // Trailing slash handling
-  trailingSlash: true,
-
   // Turbopack configuration (empty for now)
   turbopack: {},
 };
