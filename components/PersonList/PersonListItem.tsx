@@ -131,6 +131,67 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
     }
   };
 
+  // Touch handlers for mobile drag & drop
+  const [touchStartY, setTouchStartY] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [touchMoved, setTouchMoved] = useState(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isEditMode || !onDragStart) return;
+
+    const touch = e.touches[0];
+    setTouchStartY(touch.clientY);
+    setIsDragging(false);
+    setTouchMoved(false);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isEditMode) return;
+
+    const touch = e.touches[0];
+    const deltaY = Math.abs(touch.clientY - touchStartY);
+
+    // Only start dragging if moved more than 10px vertically
+    if (deltaY > 10) {
+      setIsDragging(true);
+      setTouchMoved(true);
+      e.preventDefault(); // Prevent scrolling while dragging
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isEditMode || !isDragging || !onDragStart) {
+      setTouchStartY(0);
+      setIsDragging(false);
+      setTouchMoved(false);
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const deltaY = touch.clientY - touchStartY;
+
+    // Determine direction and find target element
+    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    const targetListItem = targetElement?.closest('.person-list-item');
+
+    if (targetListItem) {
+      const allItems = Array.from(document.querySelectorAll('.person-list-item'));
+      const targetIndex = allItems.indexOf(targetListItem);
+
+      if (targetIndex !== -1 && targetIndex !== index && onDrop) {
+        // Create a fake event with the target index
+        const fakeEvent = {
+          preventDefault: () => {},
+        } as any;
+        onDrop(fakeEvent, targetIndex);
+      }
+    }
+
+    setTouchStartY(0);
+    setIsDragging(false);
+    setTouchMoved(false);
+  };
+
   const creditIndicatorType = paymentLogic.getCreditIndicatorType(person.credits);
   const creditsDisplay = paymentLogic.formatCredits(person.credits);
   const dateDisplay = paymentLogic.formatDate(person.date);
@@ -144,6 +205,9 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{ animationDelay: `${index * 50}ms` }}
       >
         {/* Delete Icon (visible in edit mode - left side) */}
