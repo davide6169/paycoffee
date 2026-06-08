@@ -1,12 +1,15 @@
 {
   "name": "paycoffee",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "PayCoffee Web App - Coffee payment tracking app",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0",
+    "dev:local": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "next start -H 0.0.0.0",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.2.7",

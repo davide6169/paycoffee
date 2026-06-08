@@ -1,26 +1,1297 @@
-@import "tailwindcss";
+/* PayCoffee Global Styles - iOS App Replica */
 
+/* CSS Variables for iOS Color Replication */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* iOS Colors */
+  --ios-dark-bg: #1a1a1a;
+  --ios-cell-bg: rgba(26, 26, 26, 0.7);
+  --ios-cell-bg-selected: rgba(255, 255, 255, 0.1);
+  --ios-text-primary: #ffffff;
+  --ios-text-secondary: #8e8e93;
+
+  /* Credit indicators */
+  --credit-positive: #2ecc71;
+  --credit-negative: #e74c3c;
+  --credit-neutral: #f1c40f;
+
+  /* UI elements */
+  --toolbar-bg: rgba(26, 26, 26, 0.9);
+  --button-blue: #007aff;
+  --button-red: #ff3b30;
+
+  /* Separator */
+  --separator: rgba(255, 255, 255, 0.1);
+
+  /* Typography */
+  --font-title: 'Georgia', serif;
+  --font-detail: 'Georgia', serif;
+  --font-size-title: 18px;
+  --font-size-detail: 16px;
+
+  /* Layout */
+  --row-height: 54px;
+  --toolbar-height: 44px;
+  --nav-height: 44px;
+  --max-width: 414px; /* iPhone Max width */
+
+  /* Coffee theme */
+  --coffee-dark: #0d0d0d;
+  --coffee-medium: #2a1810;
+  --coffee-light: #4a2c17;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
+  width: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-detail);
+  font-size: var(--font-size-detail);
+  color: var(--ios-text-primary);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Mobile: no padding, fullscreen */
+@media (max-width: 420px) {
+  body {
+    padding: 0;
+  }
+}
+
+/* Georgia Font Face */
+@font-face {
+  font-family: 'Georgia';
+  src: local('Georgia'), local('Georgia Regular');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Georgia-BoldItalic';
+  src: local('Georgia Bold Italic'), local('Georgia-BoldItalic');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Flip Container - handles the 3D rotation */
+.flip-container {
+  width: var(--max-width);
+  height: 850px;
+  max-height: 90vh;
+  position: relative;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flip-container.flipping {
+  transform: rotateY(180deg);
+}
+
+/* Main App Container */
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ios-dark-bg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  z-index: 2;
+}
+
+/* Coffee Background Overlay */
+.app-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/images/CoffeeBackground.jpg') center center;
+  background-size: cover;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Navigation Bar */
+.navigation {
+  height: var(--nav-height);
+  background: var(--toolbar-bg);
+  border-bottom: 1px solid var(--separator);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+/* Navigation title centered */
+.navigation-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.navigation-button {
+  background: transparent;
+  border: none;
+  color: var(--button-blue);
+  font-size: 17px;
+  font-weight: 400;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+/* Edit button - iOS 2011-2012 style with blue background */
+.navigation-button.edit-button {
+  background: linear-gradient(to bottom, #1a8aff 0%, #007aff 50%, #0062cc 51%, #007aff 100%);
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Done button - iOS 2011-2012 style with blue background */
+.navigation-button.done-button {
+  background: linear-gradient(to bottom, #1a8aff 0%, #007aff 50%, #0062cc 51%, #007aff 100%);
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Donate button - iOS 2011-2012 style with blue background */
+.navigation-button.donate-button {
+  background: linear-gradient(to bottom, #1a8aff 0%, #007aff 50%, #0062cc 51%, #007aff 100%);
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navigation-button.edit-button:hover,
+.navigation-button.done-button:hover,
+.navigation-button.donate-button:hover {
+  background: linear-gradient(to bottom, #2a9aff 0%, #108aff 50%, #0072e6 51%, #108aff 100%);
+}
+
+.navigation-button.edit-button:active,
+.navigation-button.done-button:active,
+.navigation-button.donate-button:active {
+  background: linear-gradient(to bottom, #0062cc 0%, #0052a3 50%, #004282 51%, #0052a3 100%);
+  transform: translateY(1px);
+}
+
+.navigation-button:hover {
+  opacity: 0.7;
+}
+
+.navigation-button:active {
+  opacity: 0.5;
+}
+
+/* Content Area */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 5;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Person List */
+.person-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px;
+}
+
+.person-list-item {
+  height: var(--row-height);
+  background: var(--ios-cell-bg);
+  border-bottom: 1px solid var(--separator);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+/* Add spacing for checkbox area */
+.person-list-item:not(.edit-mode) {
+  padding-right: 48px;
+}
+
+/* First item - top rounded corners */
+.person-list-item:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Last item - bottom rounded corners */
+.person-list-item:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom: none;
+}
+
+.person-list-item:hover {
+  background: var(--ios-cell-bg-selected);
+}
+
+.person-list-item:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.person-list-item.selected {
+  background: var(--ios-cell-bg-selected);
+}
+
+.person-list-item.keyboard-focused {
+  background: rgba(0, 122, 255, 0.3);
+  box-shadow: inset 0 0 0 2px rgba(0, 122, 255, 0.8);
+}
+
+.person-list-item.keyboard-focused:hover {
+  background: rgba(0, 122, 255, 0.4);
+}
+
+.person-list-item.edit-mode {
+  padding-left: 44px;
+  padding-right: 44px;
+}
+
+/* Delete Icon (iOS 2011-2012 style - red circle with minus) */
+.delete-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 300;
+  color: white;
+  background: var(--button-red);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.delete-icon:hover {
+  opacity: 0.7;
+}
+
+.delete-icon:active {
+  opacity: 0.5;
+}
+
+/* Add margin to separate delete icon from credit indicator */
+.person-list-item.edit-mode .credit-indicator {
+  margin-left: 8px;
+}
+
+/* Reorder Icon (iOS 2011-2012 style) */
+.reorder-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--ios-text-secondary);
+  cursor: move;
+  user-select: none;
+}
+
+.reorder-icon:hover {
+  color: var(--ios-text-primary);
+}
+
+/* Dragging state */
+.person-list-item.dragging {
+  opacity: 0.5;
+  background: var(--ios-cell-bg-selected);
+}
+
+.person-list-item[draggable="true"] {
+  cursor: move;
+}
+
+/* Person Item Content */
+.person-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.credit-indicator {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.credit-indicator.positive {
+  background-image: url('/images/credit-positive.png');
+}
+
+.credit-indicator.negative {
+  background-image: url('/images/credit-negative.png');
+}
+
+.credit-indicator.neutral {
+  background-image: url('/images/credit-neutral.png');
+}
+
+.person-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.person-name {
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: normal;
+  color: var(--ios-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-credits {
+  font-family: var(--font-detail);
+  font-size: var(--font-size-detail);
+  color: var(--ios-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-date {
+  font-size: 14px;
+  color: var(--ios-text-secondary);
+  margin-left: 8px;
+}
+
+/* Checkbox */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ios-text-secondary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.checkbox.checked {
+  background: var(--button-blue);
+  border-color: var(--button-blue);
+}
+
+.checkbox-icon {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: none;
+}
+
+/* iOS Checkmark using pseudo-element */
+.checkbox.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+}
+
+.checkbox.checked .checkbox-icon {
+  opacity: 0;
+  display: none;
+}
+
+/* Toolbar */
+.toolbar {
+  height: var(--toolbar-height);
+  background: var(--toolbar-bg);
+  border-top: 1px solid var(--separator);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.toolbar-button {
+  background: transparent;
+  border: none;
+  color: var(--button-blue);
+  font-size: 17px;
+  font-weight: 400;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  min-width: 80px;
+  text-align: center;
+}
+
+.toolbar-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toolbar-button:active {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
+}
+
+.toolbar-button:disabled {
+  color: var(--ios-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Toolbar button with icon */
+.toolbar-button-icon {
+  padding: 8px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Info button (i in italic, no circle) */
+.info-button {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--button-blue);
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: 'Georgia', serif;
+}
+
+.info-button:hover {
+  opacity: 0.7;
+}
+
+.info-button:active {
+  opacity: 0.5;
+}
+
+/* Checkmark icon for Select All */
+.checkmark-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--button-blue);
+  line-height: 1;
+}
+
+/* List icon (iOS 2011-2012 style) */
+.list-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 2px 0;
+}
+
+.list-item-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 24px;
+}
+
+.list-number {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--button-blue);
+  font-family: var(--font-detail);
+  line-height: 1;
+  min-width: 9px;
+  text-align: left;
+}
+
+.list-line {
+  width: 14px;
+  height: 1.5px;
+  background: var(--button-blue);
+  border-radius: 1px;
+  flex: 1;
+}
+
+/* Actions icon button (iOS 2011-2012 style) */
+.action-icon-button {
+  min-width: 44px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #4a4a4a 0%, #2d2d2d 50%, #1a1a1a 51%, #2d2d2d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s ease;
+}
+
+/* Actions button (iOS 2011-2012 style with blue background) */
+.navigation-button.actions-button {
+  background: linear-gradient(to bottom, #1a8aff 0%, #007aff 50%, #0062cc 51%, #007aff 100%);
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.navigation-button.actions-button:hover {
+  background: linear-gradient(to bottom, #2a9aff 0%, #108aff 50%, #0072e6 51%, #108aff 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.action-icon-button:active {
+  background: linear-gradient(to bottom, #2d2d2d 0%, #1a1a1a 50%, #0d0d0d 51%, #1a1a1a 100%);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.navigation-button.actions-button:active {
+  background: linear-gradient(to bottom, #0062cc 0%, #0052a3 50%, #004282 51%, #0052a3 100%);
+  transform: translateY(1px);
+}
+
+.action-icon-button:hover {
+  background: linear-gradient(to bottom, #5a5a5a 0%, #3d3d3d 50%, #2a2a2a 51%, #3d3d3d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+.action-icon-button:active {
+  background: linear-gradient(to bottom, #2d2d2d 0%, #1a1a1a 50%, #0d0d0d 51%, #1a1a1a 100%);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.action-icon {
+  font-size: 20px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.toolbar-button.danger {
+  color: var(--button-red);
+}
+
+/* Modal/Dialog */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--ios-dark-bg);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-title {
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-message {
+  font-family: var(--font-detail);
+  font-size: var(--font-size-detail);
+  color: var(--ios-text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.modal-actions.button-row {
+  justify-content: space-between; /* Distribute buttons to align with text field edges */
+}
+
+.modal-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.modal-button.primary {
+  background: var(--button-blue);
+  color: white;
+}
+
+.modal-button.primary:hover {
+  background: #0056b3;
+}
+
+.modal-button.secondary {
+  background: transparent;
+  color: var(--button-blue);
+  border: 1px solid var(--button-blue);
+}
+
+.modal-button.secondary:hover {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.modal-button.danger {
+  background: var(--button-red);
+  color: white;
+}
+
+.modal-button.danger:hover {
+  background: #c21f14;
+}
+
+/* Input */
+.form-aligned-container {
+  width: 224px; /* Same width as two buttons combined (100px + 12px gap + 100px + padding) */
+  margin: 0 auto;
+}
+
+.form-aligned-container.button-row {
+  margin-top: 16px; /* Space between text field and buttons */
+}
+
+.input-field {
+  width: 100%; /* Fill the container width */
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+  color: var(--ios-text-primary);
+  font-size: 16px;
+  font-family: var(--font-detail);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-field::placeholder {
+  color: var(--ios-text-secondary);
+}
+
+.input-field:focus {
+  border-color: var(--button-blue);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-family: var(--font-detail);
+  font-size: 16px;
+  color: var(--ios-text-secondary);
+  line-height: 1.5;
+}
+
+/* Action Sheet (Export/Import Menu) */
+.action-sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 1001;
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.action-sheet-title {
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Confirmation Dialog */
+.confirmation-dialog {
+  background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.confirmation-title {
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  margin-bottom: 16px;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-title-only {
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-message {
+  font-family: var(--font-detail);
+  font-size: var(--font-size-detail);
+  color: var(--ios-text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.5;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.confirmation-dialog .action-sheet-cancel {
+  width: 100%;
+  margin: 0;
+}
+
+.confirmation-dialog .action-sheet-cancel:hover,
+.confirmation-dialog .action-sheet-cancel:focus {
+  outline: none;
+}
+
+.confirmation-dialog .action-sheet-cancel:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
+
+/* Payment Dialog - uses same style as confirmation dialog */
+.payment-dialog {
+  /* Inherits all styles from confirmation-dialog */
+}
+
+.payment-dialog .action-sheet-cancel:hover,
+.payment-dialog .action-sheet-cancel:focus {
+  outline: none;
+}
+
+.payment-dialog .action-sheet-cancel:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
+
+.action-sheet-cancel {
+  margin: 16px;
+  margin-top: 8px;
+  height: var(--row-height);
+  background: linear-gradient(to bottom, #1a8aff 0%, #007aff 50%, #0062cc 51%, #007aff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  font-family: var(--font-detail);
+  font-size: 17px;
+  font-weight: 500;
+  color: #ffffff;
+  border: none;
+  width: calc(100% - 32px);
+  padding: 0 16px;
+  border-radius: 10px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.action-sheet-cancel:hover,
+.action-sheet-cancel:focus {
+  background: linear-gradient(to bottom, #2a9aff 0%, #108aff 50%, #0072e6 51%, #108aff 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  outline: none;
+}
+
+.action-sheet-cancel:focus-visible {
+  background: linear-gradient(to bottom, #2a9aff 0%, #108aff 50%, #0072e6 51%, #108aff 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
+
+.action-sheet-cancel:active {
+  background: linear-gradient(to bottom, #0062cc 0%, #0052a3 50%, #004282 51%, #0052a3 100%);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.action-sheet-actions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 auto;
+  overflow-y: visible;
+  width: calc(100% - 32px);
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.action-sheet-button {
+  height: var(--row-height);
+  background: linear-gradient(to bottom, #3a7abd 0%, #2d6aaa 50%, #255a8f 51%, #2d6aaa 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  padding-left: 36px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  text-align: left;
+  font-family: var(--font-title);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  color: #ffffff;
+  border: none;
+  width: 100%;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.action-sheet-button:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.action-sheet-button:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom: none;
+}
+
+.action-sheet-button:hover,
+.action-sheet-button:focus {
+  background: linear-gradient(to bottom, #4a8acd 0%, #3d7abc 50%, #3570a1 51%, #3d7abc 100%);
+  outline: none;
+}
+
+.action-sheet-button:focus-visible {
+  background: linear-gradient(to bottom, #4a8acd 0%, #3d7abc 50%, #3570a1 51%, #3d7abc 100%);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
+
+.action-sheet-button:active {
+  background: linear-gradient(to bottom, #2d5a8f 0%, #205078 50%, #184667 51%, #205078 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.action-sheet-button.danger {
+  background: linear-gradient(to bottom, #c44040 0%, #b03030 50%, #9c2525 51%, #b03030 100%);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.action-sheet-button.danger:hover {
+  background: linear-gradient(to bottom, #d45050 0%, #c04040 50%, #a83030 51%, #c04040 100%);
+}
+
+/* Info View */
+.info-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ios-dark-bg);
+  background: linear-gradient(135deg, var(--coffee-dark) 0%, var(--coffee-medium) 100%);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: rotateY(180deg);
+  transform-origin: center center;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-view .navigation {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+/* Coffee Background Overlay for InfoView */
+.info-view::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/images/CoffeeBackground.jpg') center center;
+  background-size: cover;
+  background-attachment: fixed;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 20px;
+}
+
+/* Mobile: fullscreen */
+@media (max-width: 420px) {
+  .flip-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+  }
+
+  .app-container {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .info-view {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .info-view::before {
+    border-radius: 0;
+  }
+}
+
+.info-view-content {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  outline: none;
+}
+
+.info-view-content:focus {
+  outline: none;
+}
+
+.info-view-content:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.3);
+  outline-offset: -2px;
+}
+
+.info-view-content h2 {
+  font-family: var(--font-title);
+  font-size: 24px;
+  font-weight: bold;
+  font-style: italic;
+  color: var(--ios-text-primary);
+  margin-bottom: 16px;
+}
+
+.info-view-content p {
+  font-family: var(--font-detail);
+  font-size: 16px;
+  color: var(--ios-text-primary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.info-view-content ul {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.info-view-content li {
+  font-family: var(--font-detail);
+  font-size: 16px;
+  color: var(--ios-text-primary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ios-text-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ios-text-primary);
+}
+
+/* Make scrollbar always visible on desktop */
+.info-view-content:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.info-view-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .person-list-item {
+    padding: 0 12px;
+  }
+
+  .toolbar-button {
+    padding: 10px 12px;
+    min-width: 70px;
+    font-size: 16px;
+  }
+}
+
+/* Loading State */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Toast Notification */
+.toast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+  pointer-events: none;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.toast.hiding {
+  animation: fadeOut 0.3s ease;
 }
