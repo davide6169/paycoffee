@@ -1135,9 +1135,13 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1;
   overflow: hidden;
-  /* Remove transform to fix iOS scrolling - will use flip animation instead */
+  transform: rotateY(180deg);
+  transform-origin: center center;
+  backface-visibility: hidden;
   display: flex;
   flex-direction: column;
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 .info-view .navigation {

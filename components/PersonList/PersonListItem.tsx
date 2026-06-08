@@ -131,90 +131,79 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
     }
   };
 
-  // Touch handlers for mobile drag & drop
+  // Touch handlers for mobile drag & drop - simpler approach
   const [touchStartY, setTouchStartY] = useState<number>(0);
-  const [isTouchDragging, setIsTouchDragging] = useState(false);
-  const [touchMoved, setTouchMoved] = useState(false);
+  const [touchStartElement, setTouchStartElement] = useState<Element | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (!isEditMode || !onDragStart) return;
+    if (!isEditMode) return;
 
     const touch = e.touches[0];
     setTouchStartY(touch.clientY);
-    setIsTouchDragging(false);
-    setTouchMoved(false);
+    setTouchStartElement(e.currentTarget);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isEditMode) return;
+    if (!isEditMode || !touchStartElement) return;
 
     const touch = e.touches[0];
     const deltaY = Math.abs(touch.clientY - touchStartY);
 
-    // Only start dragging if moved more than 10px vertically
-    if (deltaY > 10) {
-      setIsTouchDragging(true);
-      setTouchMoved(true);
-      e.preventDefault(); // Prevent scrolling while dragging
+    // Only prevent scrolling if dragging significantly
+    if (deltaY > 20) {
+      e.preventDefault();
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!isEditMode || !isTouchDragging || !onDragStart) {
+    if (!isEditMode || !touchStartElement || !onDragStart) {
       setTouchStartY(0);
-      setIsTouchDragging(false);
-      setTouchMoved(false);
+      setTouchStartElement(null);
       return;
     }
 
     const touch = e.changedTouches[0];
     const deltaY = touch.clientY - touchStartY;
 
-    // Determine if we moved up or down
-    const direction = deltaY > 0 ? 1 : -1; // 1 for down, -1 for up
-
-    // Find the element at the touch position
-    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-
-    if (!targetElement) {
+    // Only process if moved more than 30px
+    if (Math.abs(deltaY) < 30) {
       setTouchStartY(0);
-      setIsTouchDragging(false);
-      setTouchMoved(false);
+      setTouchStartElement(null);
       return;
     }
 
-    // Find the closest person-list-item
-    const targetListItem = targetElement.closest('.person-list-item');
+    // Determine direction
+    const direction = deltaY > 0 ? 'down' : 'up';
 
-    if (targetListItem) {
-      const allItems = Array.from(document.querySelectorAll('.person-list-item'));
-      const targetIndex = allItems.indexOf(targetListItem);
+    // Find target index based on touch position
+    const allItems = Array.from(document.querySelectorAll('.person-list-item'));
 
-      if (targetIndex !== -1 && targetIndex !== index && onDrop) {
-        // Call the reorder function directly
-        onDrop({ preventDefault: () => {} } as any, targetIndex);
+    // Find which item is closest to the touch position
+    let closestIndex = index;
+    let minDistance = Infinity;
+
+    allItems.forEach((item, idx) => {
+      const rect = item.getBoundingClientRect();
+      const itemCenterY = rect.top + rect.height / 2;
+      const distance = Math.abs(touch.clientY - itemCenterY);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = idx;
       }
-    } else {
-      // If we didn't land on an item, try to determine based on direction
-      // Get the current item's position and move one step in the direction
-      const allItems = Array.from(document.querySelectorAll('.person-list-item'));
-      const currentItem = allItems[index];
+    });
 
-      if (currentItem) {
-        const currentRect = currentItem.getBoundingClientRect();
-        const targetIndex = direction > 0
-          ? Math.min(index + 1, allItems.length - 1)
-          : Math.max(index - 1, 0);
-
-        if (targetIndex !== index && onDrop) {
-          onDrop({ preventDefault: () => {} } as any, targetIndex);
-        }
-      }
+    // If we found a different item, swap them
+    if (closestIndex !== index && closestIndex !== -1 && onDrop) {
+      onDragStart(index);
+      // Small delay to allow drag state to update
+      setTimeout(() => {
+        onDrop({ preventDefault: () => {} } as any, closestIndex);
+      }, 50);
     }
 
     setTouchStartY(0);
-    setIsTouchDragging(false);
-    setTouchMoved(false);
+    setTouchStartElement(null);
   };
 
   const creditIndicatorType = paymentLogic.getCreditIndicatorType(person.credits);
@@ -224,7 +213,7 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
   return (
     <>
       <li
-        className={`person-list-item ${person.checked ? 'selected' : ''} ${isEditMode ? 'edit-mode' : ''} ${isDragging || isTouchDragging ? 'dragging' : ''} ${isFocused ? 'keyboard-focused' : ''}`}
+        className={`person-list-item ${person.checked ? 'selected' : ''} ${isEditMode ? 'edit-mode' : ''} ${isDragging ? 'dragging' : ''} ${isFocused ? 'keyboard-focused' : ''}`}
         onClick={onClick}
         draggable={isEditMode}
         onDragStart={handleDragStart}
