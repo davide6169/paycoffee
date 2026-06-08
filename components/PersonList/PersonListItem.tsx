@@ -170,20 +170,45 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
     const touch = e.changedTouches[0];
     const deltaY = touch.clientY - touchStartY;
 
-    // Determine direction and find target element
+    // Determine if we moved up or down
+    const direction = deltaY > 0 ? 1 : -1; // 1 for down, -1 for up
+
+    // Find the element at the touch position
     const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-    const targetListItem = targetElement?.closest('.person-list-item');
+
+    if (!targetElement) {
+      setTouchStartY(0);
+      setIsTouchDragging(false);
+      setTouchMoved(false);
+      return;
+    }
+
+    // Find the closest person-list-item
+    const targetListItem = targetElement.closest('.person-list-item');
 
     if (targetListItem) {
       const allItems = Array.from(document.querySelectorAll('.person-list-item'));
       const targetIndex = allItems.indexOf(targetListItem);
 
       if (targetIndex !== -1 && targetIndex !== index && onDrop) {
-        // Create a fake event with the target index
-        const fakeEvent = {
-          preventDefault: () => {},
-        } as any;
-        onDrop(fakeEvent, targetIndex);
+        // Call the reorder function directly
+        onDrop({ preventDefault: () => {} } as any, targetIndex);
+      }
+    } else {
+      // If we didn't land on an item, try to determine based on direction
+      // Get the current item's position and move one step in the direction
+      const allItems = Array.from(document.querySelectorAll('.person-list-item'));
+      const currentItem = allItems[index];
+
+      if (currentItem) {
+        const currentRect = currentItem.getBoundingClientRect();
+        const targetIndex = direction > 0
+          ? Math.min(index + 1, allItems.length - 1)
+          : Math.max(index - 1, 0);
+
+        if (targetIndex !== index && onDrop) {
+          onDrop({ preventDefault: () => {} } as any, targetIndex);
+        }
       }
     }
 
