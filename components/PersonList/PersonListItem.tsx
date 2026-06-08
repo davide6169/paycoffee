@@ -133,7 +133,7 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
 
   // Touch handlers for mobile drag & drop
   const [touchStartY, setTouchStartY] = useState<number>(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isTouchDragging, setIsTouchDragging] = useState(false);
   const [touchMoved, setTouchMoved] = useState(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -141,7 +141,7 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
 
     const touch = e.touches[0];
     setTouchStartY(touch.clientY);
-    setIsDragging(false);
+    setIsTouchDragging(false);
     setTouchMoved(false);
   };
 
@@ -153,16 +153,16 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
 
     // Only start dragging if moved more than 10px vertically
     if (deltaY > 10) {
-      setIsDragging(true);
+      setIsTouchDragging(true);
       setTouchMoved(true);
       e.preventDefault(); // Prevent scrolling while dragging
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!isEditMode || !isDragging || !onDragStart) {
+    if (!isEditMode || !isTouchDragging || !onDragStart) {
       setTouchStartY(0);
-      setIsDragging(false);
+      setIsTouchDragging(false);
       setTouchMoved(false);
       return;
     }
@@ -188,7 +188,7 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
     }
 
     setTouchStartY(0);
-    setIsDragging(false);
+    setIsTouchDragging(false);
     setTouchMoved(false);
   };
 
@@ -199,7 +199,7 @@ export const PersonListItem: React.FC<PersonListItemProps> = ({
   return (
     <>
       <li
-        className={`person-list-item ${person.checked ? 'selected' : ''} ${isEditMode ? 'edit-mode' : ''} ${isDragging ? 'dragging' : ''} ${isFocused ? 'keyboard-focused' : ''}`}
+        className={`person-list-item ${person.checked ? 'selected' : ''} ${isEditMode ? 'edit-mode' : ''} ${isDragging || isTouchDragging ? 'dragging' : ''} ${isFocused ? 'keyboard-focused' : ''}`}
         onClick={onClick}
         draggable={isEditMode}
         onDragStart={handleDragStart}
