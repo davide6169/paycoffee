@@ -1140,14 +1140,20 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1;
   overflow: hidden;
-  transform: rotateY(180deg);
-  transform-origin: center center;
-  backface-visibility: hidden;
   display: flex;
   flex-direction: column;
+  /* Use simple fade animation instead of 3D transform to enable scrolling */
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Remove flip animation as transform is needed for correct display */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 .info-view .navigation {
   position: sticky;
