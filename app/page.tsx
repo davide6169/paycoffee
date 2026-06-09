@@ -22,12 +22,12 @@ function AppContent() {
 
   useEffect(() => {
     if (appContainerRef.current) {
-      // Only add flipping class when InfoView is CLOSED
-      // When InfoView is open, show it without flip to prevent mirror effect
+      // Add flipping class when InfoView is OPEN to show it
+      // Remove flipping when InfoView is CLOSED to show main app
       if (infoViewOpen) {
-        appContainerRef.current.classList.remove('flipping');
-      } else {
         appContainerRef.current.classList.add('flipping');
+      } else {
+        appContainerRef.current.classList.remove('flipping');
       }
     }
   }, [infoViewOpen]);
