@@ -22,10 +22,12 @@ function AppContent() {
 
   useEffect(() => {
     if (appContainerRef.current) {
-      // Don't add flipping class when InfoView is open to prevent mirror effect
-      // The flip animation was blocking scrolling functionality
-      if (!infoViewOpen) {
+      // Only add flipping class when InfoView is CLOSED
+      // When InfoView is open, show it without flip to prevent mirror effect
+      if (infoViewOpen) {
         appContainerRef.current.classList.remove('flipping');
+      } else {
+        appContainerRef.current.classList.add('flipping');
       }
     }
   }, [infoViewOpen]);
