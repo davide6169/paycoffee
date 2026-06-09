@@ -1137,22 +1137,14 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1;
   overflow: hidden;
+  transform: rotateY(180deg);
+  transform-origin: center center;
+  backface-visibility: hidden;
   display: flex;
   flex-direction: column;
-  /* Flip animation will be handled via CSS animation instead of transform */
-  animation: flipIn 0.6s ease-in-out;
 }
 
-@keyframes flipIn {
-  from {
-    opacity: 0;
-    transform: rotateY(90deg);
-  }
-  to {
-    opacity: 1;
-    transform: rotateY(0deg);
-  }
-}
+/* Remove flip animation as transform is needed for correct display */
 
 .info-view .navigation {
   position: sticky;
@@ -1190,15 +1182,10 @@ body {
   min-height: 0;
   outline: none;
   -webkit-overflow-scrolling: touch;
-  /* Force GPU acceleration for smoother scrolling on iOS */
-  transform: translate3d(0, 0, 0);
   /* Enable touch scrolling */
   touch-action: pan-y;
   /* Add bottom padding for safe area on mobile */
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
-  /* Ensure content is scrollable on iOS */
-  -webkit-transform: translateZ(0);
-  will-change: scroll-position;
 }
 
 .info-view-content:focus {
