@@ -1137,22 +1137,36 @@ body {
   background: var(--ios-dark-bg);
   background: linear-gradient(135deg, var(--coffee-dark) 0%, var(--coffee-medium) 100%);
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* Use simple fade animation instead of 3D transform to enable scrolling */
-  animation: fadeIn 0.3s ease-in-out;
+  /* Remove all 3D transforms to enable scrolling - use z-index instead */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Flip container with transform - only affects main app */
+.flip-container.flipping .app-container {
+  transform: rotateY(180deg);
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+/* App container baseline */
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ios-dark-bg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  z-index: 2;
 }
 
 .info-view .navigation {
