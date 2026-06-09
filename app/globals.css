@@ -182,7 +182,7 @@ body {
 /* Navigation title centered */
 .navigation-title {
   position: absolute;
-  left: 50%;
+  left: 45%;
   transform: translateX(-50%);
   font-family: var(--font-title);
   font-size: var(--font-size-title);
@@ -191,6 +191,9 @@ body {
   color: var(--ios-text-primary);
   text-align: center;
   white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .navigation-button {
