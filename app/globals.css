@@ -116,19 +116,12 @@ body {
   font-display: swap;
 }
 
-/* Flip Container - handles the 3D rotation */
+/* Flip Container - now just a wrapper without 3D transforms */
 .flip-container {
   width: var(--max-width);
   height: 850px;
   max-height: 90vh;
   position: relative;
-  perspective: 1500px;
-  transform-style: preserve-3d;
-  transition: transform 0.6s ease-in-out;
-}
-
-.flip-container.flipping {
-  transform: rotateY(180deg);
 }
 
 /* Main App Container */
@@ -141,18 +134,13 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
   z-index: 2;
-  transition: transform 0.6s ease-in-out;
-}
-
-/* When flipping, hide app container */
-.flip-container.flipping .app-container {
-  transform: rotateY(180deg);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Coffee Background Overlay */
@@ -1148,21 +1136,27 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transform: rotateY(180deg);
-  transform-origin: center center;
-  backface-visibility: hidden;
-  transition: transform 0.6s ease-in-out;
-  visibility: hidden;
+  /* No more 3D transforms - use z-index and opacity for visibility */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
-/* Show InfoView when flipping */
-.flip-container.flipping .info-view {
-  transform: rotateY(360deg);
-  visibility: visible;
+/* Show InfoView when info-view-open class is present */
+.flip-container.info-view-open .info-view {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+  z-index: 10;
+}
+
+/* Hide app container when InfoView is open */
+.flip-container.info-view-open .app-container {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* App container baseline */

@@ -22,12 +22,12 @@ function AppContent() {
 
   useEffect(() => {
     if (appContainerRef.current) {
-      // Add flipping class when InfoView is OPEN to show it
-      // Remove flipping when InfoView is CLOSED to show main app
+      // No more flip - use z-index and opacity instead
+      // InfoView visibility is handled by CSS based on infoViewOpen state
       if (infoViewOpen) {
-        appContainerRef.current.classList.add('flipping');
+        appContainerRef.current.classList.add('info-view-open');
       } else {
-        appContainerRef.current.classList.remove('flipping');
+        appContainerRef.current.classList.remove('info-view-open');
       }
     }
   }, [infoViewOpen]);
