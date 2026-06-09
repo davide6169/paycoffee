@@ -94,7 +94,7 @@ export const InfoView: React.FC = () => {
             window.open(e.currentTarget.href, '_blank');
           }}
         >
-          Donate
+          Donate an UP coffee
         </a>
       </nav>
 
@@ -272,7 +272,7 @@ export const InfoView: React.FC = () => {
         </p>
 
         <p>
-          If you like this app please "pay a coffee" to AIPD association in Rome using "Donate" button to go directly to their website to make a donation... :-)
+          If you like this <em>APP</em> turn a <em>Down</em> day <em>UP</em>side down: buy a coffee to support AIPD in Rome using button "Donate an UP coffee"... :-)
         </p>
 
       </div>
